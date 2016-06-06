@@ -1,0 +1,15 @@
+function calcanmi(truelabelsfile,predictedlabelsfile,outputFilename)
+
+targetLabels=csvread(truelabelsfile);
+predictedLabels=csvread(predictedlabelsfile);
+targetLabels=targetLabels+(1-min(targetLabels)); % offset so that they start at 1 (ANMI calculation complains if there are nonpositive values)
+predictedLabels=predictedLabels+(1-min(predictedLabels)); % offset so that they start at 1 (ANMI calculation complains if there are nonpositive values)
+anmi=ANMI_analytical_11(predictedLabels,targetLabels);
+numTargetClusters=size(unique(targetLabels),2);
+numPredictedClusters=size(unique(predictedLabels), 2);
+
+fid=fopen(outputFilename,'w');
+fprintf(fid,'%d,%d,%f\n',numTargetClusters, numPredictedClusters, anmi);
+fclose(fid);
+exit;
+end

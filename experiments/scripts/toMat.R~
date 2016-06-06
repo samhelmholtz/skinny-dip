@@ -1,0 +1,8 @@
+dataSetFilename <- commandArgs()[6]
+outputFilename <- commandArgs()[7]
+
+dataFromFile <- read.csv(dataSetFilename, header=FALSE)
+dataMatrix <- as.matrix(dataFromFile[,2:(ncol(dataFromFile)-1)]) ## Remove the ID and class columns
+labels
+
+write.table(dataMatrix, file=outputFilename, row.names=FALSE,col.names=FALSE,sep=",")

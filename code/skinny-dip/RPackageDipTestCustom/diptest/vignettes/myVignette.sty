@@ -1,0 +1,63 @@
+%% originates  from   ~/R/Pkgs/Matrix/inst/doc/myVignette.sty  [April 2009]
+\RequirePackage{hyperref}
+\RequirePackage{url}
+\RequirePackage{amsmath}
+\RequirePackage{bm}%-> \bm (= bold math)
+\newcommand{\Slang}{\textsf{S} language}
+\newcommand{\RR}{\textsf{R}}
+\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+%- R programming markup
+\newcommand\code{\bgroup\@codex}
+\def\@codex#1{{\normalfont\ttfamily\hyphenchar\font=-1 #1}\egroup}
+\let\env=\code
+\let\command=\code
+\newcommand*{\Rfun}[1]{\code{#1()}\index{\RR~function #1}}
+\newcommand*{\class}[1]{\code{#1}\index{class #1}}%
+\newcommand*{\pkg}[1]{\code{#1}\index{\RR~package #1}}
+%
+\newcommand{\kbd}[1]{{\normalfont\texttt{#1}}}
+\newcommand{\key}[1]{{\normalfont\texttt{\uppercase{#1}}}}
+\newcommand\samp{`\bgroup\@noligs\@sampx}
+\def\@sampx#1{{\normalfont\texttt{#1}}\egroup'}
+\let\option=\samp
+\newcommand{\var}[1]{{\normalfont\textsl{#1}}}
+\newcommand{\file}[1]{{`\normalfont\textsf{#1}'}}
+\newcommand{\dfn}[1]{{\normalfont\textsl{#1}}}
+\newcommand{\acronym}[1]{{\normalfont\textsc{\lowercase{#1}}}}
+\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\let\pkg=\strong
+%
+\RequirePackage{alltt}
+\newenvironment{example}{\begin{alltt}}{\end{alltt}}
+\newenvironment{smallexample}{\begin{alltt}\small}{\end{alltt}}
+\newenvironment{display}{\list{}{}\item\relax}{\endlist}
+\newenvironment{smallverbatim}{\small\verbatim}{\endverbatim}
+% This is already in ``Sweave'' :
+%% \RequirePackage{fancyvrb}
+%% \DefineVerbatimEnvironment{Sinput}{Verbatim}{fontsize=\small,fontshape=sl}
+%% \DefineVerbatimEnvironment{Soutput}{Verbatim}{fontsize=\small}
+%% \DefineVerbatimEnvironment{Scode}{Verbatim}{fontsize=\small,fontshape=sl}
+%
+\newcommand{\FIXME}[1]{\marginpar{ \dots FIXME \emph{#1} \dots}}
+\newcommand{\TODO}[1]{\par\noindent\textsc{Todo:} \textit{#1}\par}
+%
+\newcommand*{\myOp}[1]{{$\left\langle\ensuremath{#1}\right\rangle$}}
+\newcommand{\noFootnote}[1]{{\small (\textit{#1})}}
+%
+%% diptest stuff :
+%
+%% Probabily P[.],  Expectation E[.]  etc
+%% ==  subsection of our flexible-style "texab.sty" :
+\newcommand{\@pkl}{[}     % Probability Klammer links
+\newcommand{\@pkr}{]}
+\newcommand{\@ekl}{[}     % Erwartungswert Klammer links
+\newcommand{\@ekr}{]}     % Erwartungswert Klammer rechts
+\DeclareMathOperator{\PRSymbol}{P}
+% Next line (\makeright): if #1 == \left then \right #2 else #1 #2
+\newcommand{\makeright}[2]{\ifx#1\left\right#2\else#1#2\fi}
+%% the real commands
+\newcommand{\PR}[2][\left]  {\PRSymbol     #1\@pkl #2 \makeright{#1}{\@pkr}}
+\newcommand{\ERW}[2][\left] {\ERWSymbol    #1\@ekl #2 \makeright{#1}{\@ekr}}
+
+\newcommand{\isD}{\ {\stackrel{\mathcal{D}}{=}}\ \ }
+\newcommand{\iid}{\mbox{ i.i.d. }}

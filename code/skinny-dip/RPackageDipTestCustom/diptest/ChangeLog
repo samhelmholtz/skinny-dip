@@ -1,0 +1,138 @@
+2013-07-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/dipTest.R (rdRDS): rewrite  (R <= 2.13.0) such that CRAN checks
+	are happy.
+
+2012-08-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/dipTest.R (dip.test): state 'alternative'.
+
+2012-08-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/dipTest.R (rdRDS): utility to enable pre-R-2.13, also used in
+	* data/qDiptab.R:
+
+2012-04-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.75-3, released to CRAN ...
+	* R/dipTest.R (dip.test): more careful with approx() extrapolation.
+
+2011-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/dip.R (plot.dip): cosmetic (to happify CRAN)
+
+2011-08-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* inst/doc/diptest-issues.Rnw: at least now mention dip.test().
+
+2011-08-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.75-1, released to CRAN today.
+
+	* R/dipTest.R (dip.test): use readRDS() instead of data() in the function.
+
+2011-05-25  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/dip.R (print.dip, plot.dip): show the extra GCM/LCM's.
+
+	* man/plot.dip.Rd: document plot.dip()
+
+2011-05-20  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.75-0; not released, just sent to Nick Cox.
+
+2011-05-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/dipTest.R (dip.test): finally add a dip.test(), with a P-value.
+
+2011-05-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* NAMESPACE: start using
+
+	* data/exHartigan.R: add deprecation message, and use statfaculty.
+	* DESCRIPTION: hence drop 'Lazydata' for now.
+	* man/statfaculty.Rd: also mention 'exHartigan' which is now deprecated.
+
+	* R/dip.R (dip): new 'min.is.0' argument; store 'call' and return class "dip" when
+	'full.result' is true. Further, only return the finally effective parts of LCM & GCM.
+	Allow 'debug' to be integer > 1, and support that in
+	(print.dip, plot.dip): methods, notably the plot which draws the
+	LCM and GCM.
+
+	* src/dip.c (diptst): allow for more debug output; also return the
+	lengths of 'gcm' and 'lcm'.
+
+2011-05-15  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.30-0
+
+	* src/dip.c (diptst): simplification: return 1/(2N) for N < 2 or
+	all x[j] identical; instead of zero for N < 4 or all x[] identical.
+	This finally makes dip(x1) == dip(x2)
+	when x1 <- rep(1,n)
+	and  x2 <- c(0.999999999, rep(1, n-1)).
+
+2011-05-14  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* inst/doc/diptest-issues.Rnw: finally look into computing P-values
+	from the table.  TODO: make into function
+
+2010-08-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.25-3
+
+2008-12-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/dip.Rd: add note and link to qDiptab
+
+2004-08-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.25-1
+
+	* man/statfaculty.Rd: add missing "{" after "source"
+
+2003-12-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/qDiptab.Rd: names(dimnames) in example
+
+2003-11-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date):  --> for release
+	* man/qDiptab.Rd: one million simulations!
+	* data/qDiptab.rda: new data from simulation with symmetry fix;
+	  the dimnames are now named 'n' and 'Pr'.
+
+	* man/dip.Rd: describe bug fix
+
+2003-11-13  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.25-0
+
+2003-10-31  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/dip.c (diptst):
+	        o  symmetry fix by Yong Lu -- changes results! (now <= 0.25 !)
+	                                      ================
+		o  speedup by myself: not dividing by N but at the end;
+		o  return 2-index into x, instead of (xl,xu)
+	* R/dip.R (dip): new .C() interface
+
+	* tests/mechler-ex.R: the two examples from Ferenc Mechler's
+	Statlib readme file (on his "fix" to the diptst fortran code).
+
+	* man/dip.Rd: describe full return list (for full.result = T)
+
+2003-07-14  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/qDiptab.Rd:  "large" scale simulation
+	* data/qDiptab.rda: table of quantiles
+
+2003-07-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/ex1.R: added testing examples; 3 data sets
+	* tests/sim1.R: small simulation (~ as Hartigan)
+
+2001-01-01  Martin Mächler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.9-1
+	  added `Maintainer' field

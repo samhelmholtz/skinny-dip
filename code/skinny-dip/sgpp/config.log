@@ -1,0 +1,69 @@
+file /home/sam/Documents/phd/projects/skinny-dip/code/skinny-dip/sgpp/SConstruct,line 225:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C++ library m... 
+scons: Configure: ".sconf_temp/conftest_0.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_0.cpp <-
+  |  |
+  |  |
+  |  |#include "math.h"
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_0.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_0.o -c -Wall -ansi -pedantic -Wno-long-long -fno-strict-aliasing -O3 -funroll-loops -ffloat-store .sconf_temp/conftest_0.cpp
+  |
+scons: Configure: ".sconf_temp/conftest_0" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_0 .sconf_temp/conftest_0.o -lm
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for swig...
+scons: Configure: (cached) /usr/bin/swig
+
+scons: Configure: Checking for C++ header file Python.h... 
+scons: Configure: ".sconf_temp/conftest_1.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_1.cpp <-
+  |  |
+  |  |#include "Python.h"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_1.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_1.o -c -Wall -ansi -pedantic -Wno-long-long -fno-strict-aliasing -O3 -funroll-loops -ffloat-store -I/usr/include/python2.7 .sconf_temp/conftest_1.cpp
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for javac...
+scons: Configure: (cached) /usr/bin/javac
+
+scons: Configure: Checking for java...
+scons: Configure: (cached) /usr/bin/java
+
+scons: Configure: Checking for C++ header file jni.h... 
+scons: Configure: ".sconf_temp/conftest_2.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_2.cpp <-
+  |  |
+  |  |#include "jni.h"
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp/conftest_2.o" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_2.o -c -Wall -ansi -pedantic -Wno-long-long -fno-strict-aliasing -O3 -funroll-loops -ffloat-store -I/usr/include/python2.7 .sconf_temp/conftest_2.cpp
+  |
+scons: Configure: (cached) no
+
+scons: Configure: ... found in /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/../../include
+
+

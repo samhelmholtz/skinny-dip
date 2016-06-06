@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Skinny-dip: Clustering in a sea of noise">
+    <meta name="author" content="Samuel Maurus">
+
+    <title>
+      Skinny-dip: Clustering in a sea of noise
+    </title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  </head>
+  <body class="bs-docs-home">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h1>Skinny-dip: Clustering in a sea of noise</h1>                    
+          <h3>Code, data, results and supplementary material</h3>
+          <h3>Samuel Maurus, Claudia Plant</h3>
+        </div>
+      </div>
+
+      <div class="row">
+
+	<h1>Reference</h1>
+	Maurus, S and Plant, C, "Skinny-Dip: Clustering in a sea of noise", KDD 2016.
+	
+	<h1>Code</h1>
+	<p><em>Note: in the following we use the placeholder <strong>$location$</strong> in file paths to refer to the directory in which you extracted this package on your machine. Skinny-Dip was developed on a Linux machine, so you'll have to make the necessary adjustments (e.g. file path syntax) below if you're on Windows.</em></p>
+	<p>The Skinny-Dip code was implemented in R, version 3.2.2. R is open-source and free to download at <a href="https://www.r-project.org/">https://www.r-project.org/</a>. Once you have R installed and you have an appropriate R environment setup (e.g. <a href="https://www.rstudio.com/products/RStudio/">RStudio</a>, or simply use a terminal), you should make sure you have the following packages installed from CRAN:</p>
+	<ul>
+	  <li><a href="https://cran.r-project.org/web/packages/MASS/index.html">MASS</a> (for calculating the null space of a matrix, relevant for SparseDip),</li>
+	  <li><a href="https://cran.r-project.org/web/packages/devtools/index.html">devtools</a> (to help with installing our custom diptest package),</li>	  
+	  <li><a href="https://cran.r-project.org/web/packages/dbscan/index.html">dbscan</a> (if you wish to reproduce the DBSCAN results).</li>	  
+	</ul>
+	<p>You can install these packages using the R command e.g. <code>install.packages("MASS")</code>.</p>
+	<p>Once these packages are installed, you need to install our custom version of the "diptest" package, which makes some minor adjustments to help improve SkinnyDip's efficiency and for helping detect the modal triangle for gradient ascent. Installing this package can be done with <code>library(devtools); install("$location$/code/skinny-dip/RPackageDipTestCustom/diptest");</code>.</p>
+	<p>Once you have the packages installed and loaded (i.e. <code>library(diptest)</code> to load a package), make sure your current working directory is set to the SkinnyDip code directory ("$location$/code/skinny-dip/", you can check this with <code>getwd()</code> and set with <code>setwd(dir)</code> if required). Also run <code>source("func.R");</code> to load all our skinny-dip function definitions in the file func.R. Then, you can replicate our front-page running-example clustering result with:</p>
+	<p><code>runningExampleDataSet <- generateRunningExampleDataSet(); runningExampleDataMatrix <- as.matrix(runningExampleDataSet[,2:3]); resultLabels <- skinnyDipClusteringFullSpace(runningExampleDataMatrix); resultLabels[resultLabels==0] <- 8; plot(runningExampleDataMatrix[,1], runningExampleDataMatrix[,2], col=resultLabels);</code></p>				   
+																															<p>(Note that columns 1 and 4 are the object IDs and the true cluster labels respectively, hence the reason we take columns 2 and 3 (the feature vectors) only. A minor note here is that we assign noise points with a label 8 so that they appear gray in the subsequent plot, otherwise they'd appear white.)</p>
+	<p>This function <code>skinnyDipClusteringFullSpace</code> takes a data <em>matrix</em> (not a frame) with <em>n</em> rows and <em>m</em> columns. We allow completely optional setting of the following parameters (we never changed the alpha for all our work in the paper):</p>
+	<ul>
+	  <li>Significance level alpha (defaults to 0.05), and</li>
+	  <li>Debug (boolean, defaults to FALSE, prints potentially useful debug messages if set to TRUE).</li>
+	</ul>
+	<p>The return value of <code>skinnyDipClusteringFullSpace</code> is a vector of integers, length <em>n</em>, representing the cluster labels for the objects in the data matrix. The label 0 represents "noise", i.e. points that do not belong to a cluster.</p>
+	<p>If the inclusion of the basis-search feature (SparseDip) is desired (the more general case for higher-dimensional data), then call the method <code>skinnyDipClusteringSubspace</code>. Again this just takes a data <em>matrix</em> (not a frame) with <em>n</em> rows and <em>m</em> columns. Optional parameters are:</p>
+	<ul>
+	  <li>Number of sparse grid points (<em>w</em> in the paper, defaults to 1000),</li>
+	  <li>Significance level alpha (defaults to 0.05), and</li>
+	  <li>Debug (boolean, defaults to FALSE, prints potentially useful debug messages if set to TRUE).</li>
+	</ul>
+	<p>Importantly, in order to call <code>skinnyDipClusteringSubspace</code>, you must build the sparse grids "sgpp" code in the directory $location$/code/skinny-dip/sgpp. Do this by going into that directory and calling "scons" (SConstruct) from bash. This is the SG++ code from the Technical University of Munich. See: <a href="http://sgpp.sparsegrids.org/">http://sgpp.sparsegrids.org/</a> for more information on building their code if you have problems. We have cited their relevant papers in our paper. For our use we just modified one of their example files <code>python_simple.py</code> so that it simply writes the sparse grid nodes to a file (dimension, level and output filename given as parameters...see the code). We then call this python function from within R in the method <code>generateRegularSparseGrid</code> of our code (func.R).</p>
+
+	<h1>Running Example Data</h1>
+	<p>Use the example code from above to get the running-example data with 80% noise. For reproducing the data sets for the plot in Figure 2 in the paper (running example with varying noise), simply pass the appropriate parameter to the <code>generateRunningExampleDataSet</code> function, e.g. <code>generateRunningExampleDataSet(0.3)</code> for 30% noise. The code is seeded so it will always return the same data set for a given parameter value.</p>
+
+	<h1>Additional comparison-method results on running-example data</h1>
+	<p>The directory "$location$/experiments/results/runningExampleAdditionalComparisonTechniqueImages" contains images in the style of Figure 2 in the paper (i.e. clustering results) for the techniques k-means, single- and complete-linkage clustering. The code below is seeded so that you can reproduce the same results (EM code also included...its image is in the paper). Note that the functions <code>kmeans</code> and <code>hclust</code> should be available in R by default, however the function <code>emcluster</code> requires you to install and load the package <code>EMCluster</code>.</p>
+	<h3>k-means</h3>
+	<code>runningExampleDataSet <- generateRunningExampleDataSet(); runningExampleDataMatrix <- as.matrix(runningExampleDataSet[,2:3]); set.seed(1); kmeansresult <- kmeans(runningExampleDataMatrix, 7); kmeansresult <- kmeansresult$cluster; plot(runningExampleDataMatrix[,1], runningExampleDataMatrix[,2], pch=20, cex=0.5,main="", xlab="", ylab="", xaxt="n",yaxt="n", col=kmeansresult); set.seed(NULL);</code>
+																											      <h3>EM with hard clustering</h3>
+																											      <code>library(EMCluster); runningExampleDataSet <- generateRunningExampleDataSet(); runningExampleDataMatrix <- as.matrix(runningExampleDataSet[,2:3]); set.seed(1); emobj <- simple.init(runningExampleDataMatrix, 7); emobj <- shortemcluster(runningExampleDataMatrix, emobj); emresult <- emcluster(runningExampleDataMatrix, emobj, assign.class=TRUE); emresult <- emresult$class; plot(runningExampleDataMatrix[,1], runningExampleDataMatrix[,2], pch=20, cex=0.5,main="", xlab="", ylab="", xaxt="n",yaxt="n", col=emresult); set.seed(NULL);</code>
+																																																																								       <h3>Single-link</h3>
+																																																																								       <code>set.seed(1); runningExampleDataSet <- generateRunningExampleDataSet(); runningExampleDataMatrix <- as.matrix(runningExampleDataSet[,2:3]); hc <- hclust(dist(runningExampleDataMatrix), "single"); memb <- cutree(hc, k=7); plot(runningExampleDataMatrix[,1], runningExampleDataMatrix[,2], pch=20, cex=0.5,main="", xlab="", ylab="", xaxt="n",yaxt="n", col=memb); set.seed(NULL);</code>
+																																																																																																			<h3>Complete-link</h3>
+																																																																																																			<code>set.seed(1); runningExampleDataSet <- generateRunningExampleDataSet(); runningExampleDataMatrix <- as.matrix(runningExampleDataSet[,2:3]); hc <- hclust(dist(runningExampleDataMatrix), "complete"); memb <- cutree(hc, k=7); plot(runningExampleDataMatrix[,1], runningExampleDataMatrix[,2], pch=20, cex=0.5,main="", xlab="", ylab="", xaxt="n",yaxt="n", col=memb); set.seed(NULL);</code>																																																																																																					       
+
+																																																																																																																													   <h1>North Jutland Data</h1>
+	<p>For the introduction in the paper we used a simplified version of the corresponding <a href="https://archive.ics.uci.edu/ml/datasets/3D+Road+Network+%28North+Jutland,+Denmark%29">UCI data</a>. Specifically, we considered just the two primary dimensions (latitude and longitude), omitting the elevation feature in order to enable an intuitive and easily-understandable visualization in the context of the introduction. For efficiency and quick reproducability we deterministically sampled 2000 data points from the data set for clustering with DBSCAN and SkinnyDip: here is the code to reproduce the result:</p>
+
+	<code>exData <- read.csv("$location$/experiments/data/intro/spatialnetwork.data", header=FALSE); set.seed(63); subsetIndices <- sample(1:nrow(exData),2000); exDataSubset <- exData[subsetIndices,]; testDataMatrix <- as.matrix(exDataSubset[,c(3,2)]); skinnyDipResult <- skinnyDipClusteringFullSpace(testDataMatrix); skinnyDipResult[skinnyDipResult==0] <- 8; plot(testDataMatrix[,2],testDataMatrix[,1],col=skinnyDipResult, xaxt="n",yaxt="n",xlab="",ylab="",pch=20,cex=1.1,cex.main=1.9,main="Skinny-dip clustering",bty="n"); lim <- par(); ima <- readPNG("jutland.png"); rasterImage(ima, lim$usr[1], lim$usr[3], lim$usr[2], lim$usr[4]+0.03); points(testDataMatrix[,2],testDataMatrix[,1],col=skinnyDipResult, xaxt="n",yaxt="n",xlab="",ylab="",pch=20,cex=0.8,cex.main=1.9,main="Skinny-dip clustering");  text(9.9,56.9,"Aalborg",cex=1.5); text(10.8,57.6,"Frederikshavn",cex=1.2); text(9.9,57.63,"Hjørring",cex=1.2); text(11,57.37,"Læsø",cex=1.2); text(10.4,57.21,"Dybvad",cex=1.2); text(9.4,57.23,"Blokhus",cex=1.2); text(9.9,57.35,"Bronderslev",cex=1.2);</code>
+
+																																																																				      <h1>Code for reproducing the result in Figure 5</h1>
+	<p>The code is below. Most of it is just relating to building the data set and visualizing the result. The key function call is <code>extractModalIntervals(uvdSorted, 0.05, FALSE)</code>, which is equivalent to the UniDip function in the paper (again just takes a statistical significance parameter alpha, and a boolean for whether or not to print debug information).</p>
+	<code>set.seed(10); mycolors <- rainbow(17, alpha=0.3); uvd <- c(runif(50000)); for(i in c(seq(0.05,0.35,0.05),0.5,0.55)){uvd <- c(uvd,rnorm(1000,i,0.005))}; for(i in seq(0.6,0.95,0.05)){uvd <- c(uvd,runif(1000,i,i+0.02))}; uvdSorted <- uvd[order(uvd)]; modalIntervals <- extractModalIntervals(uvdSorted, 0.05, FALSE); hist(uvd, breaks=seq(0,1,0.0025),main="",xaxt="n",xlab="",yaxt="n",ylab="",col=1); for(j in 1:nrow(modalIntervals)){intervalStart <- modalIntervals[j,1]; intervalEnd <- modalIntervals[j,2]; rect(intervalStart, 0, intervalEnd, 1000, col=mycolors[j], border=0);};</code>
+																																																														
+																																																														<h1>Synthetic Data and Results</h1>
+	<p>The data on which our experiments are based are in the directory "$location$/experiments/data/synthetic/". Here you will find the 560 data sets with the filename set according to the naming convention "synth-c6-d3-n80-set-12.data". Here "c" represents the number of clusters, "d" the number of dimensions, and "n" the noise percentage. The value of "set" ranges from 1 to 20, i.e. our 20 randomly-generated data sets for this parameter combination.</p>
+	<p>The R function which generated these data is also available. You'll find it in "$location$/code/skinny-dip/func.R" along with the rest of the code. The function required to be called is <code>generateSyntheticDataSet</code>. The parameters are simply the number of clusters (default 6), number of dimensions (default 3), the noise fraction (0 to 1, default 0.8 for 80% noise) and the number of objects per cluster (optional, defaults to 200). This will return a data matrix with the first column the object IDs (typically not practically needed), the last column the true cluster label, and the columns in between the actual data features.</p>
+	<p>The results for the comparison techniques (in the form of CSV files representing the labels predicted by these methods) on these data are in the directory "$location$/experiments/results/synthetic". The files are named according to the data set in question as well as the comparison technique in question (e.g. "single-view-<strong>dip-means</strong>-cluster-<strong>synth-c6-d3-n25-set-14</strong>.txt"). Results for SkinnyDip are not included here to save space, but they can be reproduced just by running SkinnyDip on the synthetic data directly. DBSCAN had to be automated, which meant that we ran DBSCAN 20 times, once for every different epsilon combination. These are too many results to provide, but again they can be reproduced just by scripting a call to DBSCAN directly on the data in R (and taking the greedy best for all the different values of the epsilon parameter as described in the paper).</p>
+
+	<h1>Run-Time Data</h1>
+	<p>The data on which we performed the run-time experiments (varying <em>n</em>, <em>m</em> and <em>k</em>) are in the directory "$location$/experiments/data/runTime". Here the files are named like "synth-k-12", where <em>k</em> represents the parameter in question and the <em>12</em> represents the value for that parameter that the data set reflects. If you run SkinnyDip and the competition on these data you should see the same asymptotic behavior, although of course we cannot guarantee that you will get precisely the same absolute run-time values as we show in the paper (depends on the execution environment).</p>
+	
+	<h1>Real-World Data and Results</h1>
+	<p>The real-world data we used are in the directory "$location$/experiments/data/real". All features were normalized to the range [0,1]. In the files, object ids were added to the first column, and the true labels moved to the last column. The data sets are as follows:</p>
+	<ul>
+	  <li><a href="https://vincentarelbundock.github.io/Rdatasets/doc/MASS/whiteside.html">Whiteside</a></li>
+	  <li><a href="https://archive.ics.uci.edu/ml/datasets/Dermatology">Dermatology</a></li>
+	  <li><a href="https://archive.ics.uci.edu/ml/datasets/Image+Segmentation">Image Segmentation</a></li>
+	  <li><a href="https://vincentarelbundock.github.io/Rdatasets/doc/HistData/OldMaps.html">Old Maps</a></li>
+	  <li><a href="https://archive.ics.uci.edu/ml/datasets/seeds">Seeds</a></li>
+	  <li><a href="https://vincentarelbundock.github.io/Rdatasets/doc/Zelig/coalition2.html">Coalition</a></li>
+	  <li><a href="https://vincentarelbundock.github.io/Rdatasets/doc/boot/motor.html">Motor</a></li>
+	  <li><a href="https://archive.ics.uci.edu/ml/datasets/Soybean+%28Large%29">Soybean Large</a></li>
+	  <li><a href="https://vincentarelbundock.github.io/Rdatasets/doc/car/Prestige.html">Prestige of Canadian Occupations</a></li>
+	  <li><a href="https://archive.ics.uci.edu/ml/datasets/Pen-Based+Recognition+of+Handwritten+Digits">Pen Digits</a></li>
+	</ul>
+      </div>
+      <p>Results for SkinnyDip and the comparison methods (i.e. CSV files with the predicted labels) are in the directory "$location$/experiments/results/real".</p>
+
+      <h1>Code for reproducing DBSCAN results on the real-world data</h1>
+      <p>The code is below (it requires the CRAN "dbscan" package to be loaded). The call to "calculateMetrics" was used to start MATLAB for the batch computation of a number of results using the MATLAB code for AMI discussed below. If you do not have MATLAB installed you may want to remove this call and simply dump the labels for post-processing using your desired method.</p>
+      <code>dataSetNames <- c("MASS-whiteside", "dermatology", "image-segmentation", "HistData-OldMaps", "seeds", "Zelig-coalition2", "boot-motor", "soybean-large", "car-Prestige", "pen-based-recognition-handwritten-digits"); eps_cuts <- seq(0.05,5,0.05); for(dataSetName in dataSetNames){ dataFrame <- read.csv(sprintf("/home/sam/Documents/phd/projects/skinny-dip/experiments/data/real/%s.data", dataSetName), header=FALSE); dataSet <- as.matrix(dataFrame[,2:(ncol(dataFrame)-1)]); trueLabels <- as.numeric(dataFrame[,ncol(dataFrame)]); trueLabelsList <- list(); predictedLabelsList <- list(); for(epscut in eps_cuts){ print(epscut); dbscanResult <- dbscan(dataSet, epscut, 10); predictedLabelsList <- c(predictedLabelsList, list(dbscanResult$cluster)); trueLabelsList <- c(trueLabelsList, list(trueLabels)); }; metrics <- calculateMetrics(trueLabelsList, predictedLabelsList); dataSetResults <- cbind(matrix(eps_cuts, ncol=1), metrics); print(dataSetName); print(dataSetResults);   }</code>
+																																																																																																													     
+																																																																																																													     <h1>Calculating Adjusted Mutual Information Values</h1>
+      <p>We use the code from Nguyen,Xuan and Vinh (2008-2009) for calculating the adjusted mutual information between two clusterings. We redistribute their Matlab code for the purpose of reproducing our results. The code is found in "$location$/experiments/scripts/ANMI_analytical_11.m". Refer to the referenced papers in their code for more information (including how to call it, providing predicted and true labels).</p>
+
+<h1>Another metric: Normalized Mutual Information</h1>
+      <p>We are aware of another commonly-used state-of-the-art metric for evaluating clustering results called Normalized Mutual Information. For reference, the image below shows the second-page plot of AMI with the addition of the corresponding NMI series for the Skinny-Dip results (shown in transparent red, slightly above the blue Skinny-Dip line). The results vary negligibly, so we omit NMI results from the remainder of our work to reduce clutter.</p>
+
+      <img class="text-center" src="graphics/nmi.png" height="300"/>
+
+
+      <h1>Optimization experiments: Sparse Grids vs Simple Random Sampling</h1>
+      <p>The purpose of this section is to support our choice for the use of sparse grids over simple random sampling in SparseDip. Firstly, as mentioned in the paper, sparse grid points are deterministically generated, which helps us retain determinism in our work. Secondly, we present the results of a number of experiments. Our experiments were based on four benchmark functions for optimization. Each of these functions are definable in an arbitrary dimension and have a single global minimum. The functions used were (see the links for definitions):</p>
+      <ul>
+	<li><a href="http://www.sfu.ca/~ssurjano/levy.html">Levy function</a></li>
+	<li><a href="http://www.sfu.ca/~ssurjano/michal.html">Michalewicz function</a></li>
+	<li><a href="http://www.sfu.ca/~ssurjano/dixonpr.html">Dixon-Price function</a></li>
+	<li><a href="http://www.sfu.ca/~ssurjano/rosen.html">Rosenbrock function</a></li>
+      </ul>
+
+      <p>For each function, the goal was to systematically vary the dimension and make evaluations of the function at points generated by two different sampling techniques: sparse grids and simple random sampling. We vary the dimensionality between 10 and 100, and always work with a level three sparse grid (resulting in 20401 points for 100d). In each case, the simple random sampling involved taking exactly as many samples as there were points on the corresponding sparse grid. For example, a sparse grid of level 3 in ten dimensions has 241 points, so we made exactly as many simple random samples to make the comparison. Each point on a plot represents the greedy minimum over all sampled points (note that the objective is to minimize all of these benchmark functions).</p>
+
+      <p>Here are the plots for varying dimensionality (sparse grid level kept constant at three) for the four benchmark functions. Note that, for some of these functions, the function value of the global minimum changes depending on dimension. The important information is that the sparse-grid sampling technique tends to find smaller minimum evaluations on these functions, which helps to support our decision for using sparse grids as a deterministic way to find a good starting point for gradient ascent on high-dimensional surfaces (in those cases we're looking for a maximum (dip) rather than a minimum of course):
+      <img src="graphics/levy.png"/>
+      <img src="graphics/michal.png"/>
+      <img src="graphics/dixonpr.png"/>
+      <img src="graphics/rosen.png"/>
+
+      <p>And here is the seeded R code for reproducing the results (requires loading our 'func.R' file and the 'optimizationTestFunctions.R' file):</p>
+      <code>optimizationTestFunctions <- c("levy", "michal", "dixonpr", "rosen"); optimizationTestFunctionRanges <- list(c(-10,10), c(0,pi),c(-10,10),c(-5,10)); dData <- data.frame(d=c(),l=c(),leveySg=c(),leveySrs=c(),michalSg=c(),michalSrs=c(),dixonprSg=c(),dixonprSrs=c(),rosenSg=c(),rosenSrs=c()); for(d in seq(10,100,10)){ print(sprintf("d=%d",d)); runResult <- sparseGridVsSimpleRandomSamplingCandidateGenerationTest(optimizationTestFunctions, optimizationTestFunctionRanges, d, 3); dData <- rbind(dData, runResult);}</code>
+      
+      <p>We also performed clustering on our ten data sets using simple-random sampling in SparseDip instead of sparse-grid sampling. The sparse grid results were better (or equal) in every case:</p>
+
+      <img src="graphics/realWorldComparisonSparseGridVsSimpleRandomSampling.png"/>
+      
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </div>   
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

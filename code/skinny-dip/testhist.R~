@@ -1,0 +1,69 @@
+data(iris)
+x <- iris[,c(3,4)] # select Petal.Length and Petal.Width
+plotpc(x, main="Example 1\n")
+
+# example with some parameters and showing densities
+plotpc(x,
+       main="Example 2:\nPrincipal component densities\n",
+       hist=FALSE,                    # plot densities not histograms
+       adjust=.5,                     # finer resolution in the density plots
+       gp.axis=gpar(lty=3),           # gpar of axes
+       heightx=0,                     # don't display x histogram
+       heighty=0,                     # don't display y histogram
+       text1="Principal Component 1", # text above hist for 1st principal component
+       text2="Principal Component 2", # text above hist for 2nd principal component
+       axis.len2=4,                   # length of 2nd principal axis (in std devs)
+       offset1=2.5,                   # offset of component 1 density plot
+       offset2=5)                     # offset of component 2 density plot
+
+# example using "angles"
+vp <- plotpc(x,
+       main="Example 3:\nProjections\n",
+       xrange=25,      # give ourselves some space
+       heightx=0,      # don't display x histogram
+       heighty=0,      # don't display y histogram
+       angle3=-60,     # project at -60 degrees
+       angle4=-25,     # project at -25 degrees
+       angle5=20,      # project at 20 degrees
+       angle6=70)      # project at 70 degrees
+
+# add text to the graph, can use native coords
+pushViewport(vp)
+grid.text("Projections at\nvarious angles",
+          x=unit(10, "native"), y=unit(12.5, "native"),
+          gp=gpar(col="red"))
+popViewport()
+
+# example showing principal axes
+x <- iris[iris$Species=="versicolor",c(3,4)]
+vp <- plotpc(x,
+       main="Example 4:\nPrincipal axes with confidence ellipse\n",
+       sd.ellipse=2,                       # ellipse at two standard devs
+       heightx=0, heighty=0, height1=0, height2=0, # no histograms
+       gp.ellipse=gpar(col=1),             # ellipse in black
+       axis.lenx=4, axis.leny=5,           # lengthen horiz and vertical axes
+       axis.len1=4, gp.axis1=gpar(col=1),  # lengthen pc1 axis, draw in black
+       axis.len2=8, gp.axis2=gpar(col=1))  # lengthen pc2 axis, draw in black
+
+pushViewport(vp) # add text to the graph
+un <- function(x) unit(x, "native")
+grid.text("PC1", x=un(2.2), y=un(.6),   gp=gpar(cex=.8, font=2))
+grid.text("PC2", x=un(3.9), y=un(2.35), gp=gpar(cex=.8, font=2))
+grid.text("X1",  x=un(2.2), y=un(1.4),  gp=gpar(cex=.8, font=2))
+grid.text("X2",  x=un(4.3), y=un(2.5),  gp=gpar(cex=.8, font=2))
+popViewport()
+
+# example comparing linear regression to principal axis
+x <- iris[iris$Species=="setosa",c(3,4)]
+vp <- plotpc(x,
+       main="Example 5:\nRegression lines and\nfirst principal component",
+       heightx=0, heighty=0, height1=0, height2=0, # no histograms
+       gp.points=gpar(col="steelblue"),      # color of points
+       axis.len1=4,  gp.axis1=gpar(col="gray", lwd=3),
+       axis.len2=.15, gp.axis2=gpar(col=1),  # just a little blip of an axis
+       yonx=TRUE, xony=TRUE)                 # display regression lines
+
+pushViewport(vp) # add text to the principal component line
+grid.text("PC1", x=unit(.8, "native"), y=unit(0, "native"),
+          gp=gpar(col="gray", cex=.8, font=2))
+popViewport()

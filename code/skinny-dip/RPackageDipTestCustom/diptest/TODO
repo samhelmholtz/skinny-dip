@@ -1,0 +1,17 @@
+o  The vignette inst/doc/diptest-issues.Rnw
+    (for 0.75-1, on CRAN, since 2011-08-10) is TERRIBLY outdated.
+   Notably it does not even mention the new  dip.test()  function
+	
+
+o  Consider an analogue qnormDiptab  which is constructed using
+   rnorm(.) instead of runif(.) simulations
+
+   <--> This idea is old; Werner Stuetzle's student,
+   	Jeremy Tantrum, did things in this direction in 2003;
+	see, stuff/jeremy-unimodality.R
+
+would be nice:
+
+o  Visualize the l.c.m. and g.c.m. and the modal interval !
+   g.c.m = greatest convex minorant =: G(x)
+   l.c.m = least   concave majorant =: H(x)
